@@ -14,6 +14,7 @@ import tk.mybatis.mapper.entity.Example;
 public class UserRoleServiceImpl extends BaseService<UserRole> implements UserRoleService {
 
 
+
     @Override
     @Transactional(propagation= Propagation.REQUIRED,readOnly=false,rollbackFor={Exception.class})
     public void addUserRole(UserRole userRole) {

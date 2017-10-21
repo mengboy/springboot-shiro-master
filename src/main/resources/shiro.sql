@@ -152,6 +152,19 @@ INSERT INTO `user_role` VALUES ('23', '2');
 INSERT INTO `user_role` VALUES ('1', '1');
 INSERT INTO `user_role` VALUES ('2', '2');
 
+
+-- --------------------------
+-- user login log
+-- --------------------------
+DROP TABLE IF EXISTS `user_login_log`;
+CREATE TABLE `user_login_log`(
+  `log_id` int(20) NOT NULL auto_increment,
+  `user_id` int(11),
+  `login_time` datetime,
+  `logout_time` datetime,
+  PRIMARY KEY (`log_id`),
+  CONSTRAINT `log_user_is` FOREIGN KEY (`user_id`) REFERENCES  `user` (`id`)
+)ENGINE=InnoDB DEFAULT CHARSET=utf8;
 -- ----------------------------
 -- Procedure structure for `init_shiro_demo`
 -- ----------------------------

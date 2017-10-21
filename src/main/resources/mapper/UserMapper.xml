@@ -10,4 +10,8 @@
     <result column="password" jdbcType="VARCHAR" property="password" />
     <result column="enable" jdbcType="INTEGER" property="enable" />
   </resultMap>
+  <select id="getUserId" resultType="java.lang.Integer" parameterType="com.study.model.User">
+    SELECT `id` FROM `base_service`.`user`
+    WHERE username = #{username}
+  </select>
 </mapper>

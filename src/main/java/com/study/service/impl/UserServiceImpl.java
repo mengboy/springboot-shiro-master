@@ -3,6 +3,7 @@ package com.study.service.impl;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.study.mapper.ResourcesMapper;
+import com.study.mapper.UserMapper;
 import com.study.mapper.UserRoleMapper;
 import com.study.model.User;
 import com.study.model.UserRole;
@@ -23,6 +24,9 @@ import java.util.List;
 public class UserServiceImpl extends BaseService<User> implements UserService{
     @Resource
     private UserRoleMapper userRoleMapper;
+
+    @Resource
+    private UserMapper userMapper;
 
     @Override
     public PageInfo<User> selectByPage(User user, int start, int length) {
@@ -66,5 +70,10 @@ public class UserServiceImpl extends BaseService<User> implements UserService{
         Example.Criteria criteria = example.createCriteria();
         criteria.andEqualTo("userid",userid);
         userRoleMapper.deleteByExample(example);
+    }
+
+    @Override
+    public Integer getUserId(User user) {
+        return userMapper.getUserId(user);
     }
 }

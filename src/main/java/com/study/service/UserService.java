@@ -14,4 +14,6 @@ public interface UserService extends IService<User>{
 
     void delUser(Integer userid);
 
+    Integer getUserId(User user);
+
 }
