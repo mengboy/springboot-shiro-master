@@ -6,6 +6,7 @@ import com.study.service.UserLogService;
 import com.study.service.UserService;
 import com.study.service.impl.UserServiceImpl;
 import com.study.util.DateFormate;
+import org.apache.hadoop.yarn.webapp.hamlet.Hamlet;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.ExcessiveAttemptsException;
@@ -62,13 +63,7 @@ public class HomeController {
         UsernamePasswordToken token=new UsernamePasswordToken(user.getUsername(),user.getPassword());
         try {
             subject.login(token);
-            User u = (User) subject.getPrincipal();
-            UserLog userLog = new UserLog(u.getId());
-            Date now = new Date();
-            String strNow = DateFormate.date2String(now);
-            request.getSession().setAttribute("logintime", strNow);
-            userLog.setLoginTime(strNow);
-            userLogService.insertLog(userLog);
+            insertLoginLog(request, DateFormate.date2String(new Date()), subject);
             logger.info(user.getUsername() + " 登录成功");
             return "redirect:usersPage";
         }catch (LockedAccountException lae) {
@@ -96,16 +91,29 @@ public class HomeController {
         UserLog userLog = new UserLog(user.getId());
         userLog.setLogoutTime(DateFormate.date2String(new Date()));
         String loginDate = (String) request.getSession().getAttribute("logintime");
-        request.getSession().invalidate();
         userLog.setLoginTime(loginDate);
         userLogService.updateLog(userLog);
+        request.getSession().invalidate();
         return "login";
     }
 
     @RequestMapping(value={"/usersPage",""})
-    public String usersPage(){
+    public String usersPage(HttpServletRequest request){
+        if(request.getSession().getAttribute("logintime") == null){
+            insertLoginLog(request, DateFormate.date2String(new Date()), SecurityUtils.getSubject());
+        }
         return "user/users";
     }
+
+
+    private void insertLoginLog(HttpServletRequest request, String loginTime, Subject subject){
+        User u = (User) subject.getPrincipal();
+        UserLog userLog = new UserLog(u.getId());
+        request.getSession().setAttribute("logintime", loginTime);
+        userLog.setLoginTime(loginTime);
+        userLogService.insertLog(userLog);
+    }
+
 
     @RequestMapping("/rolesPage")
     public String rolesPage(){
@@ -121,4 +129,5 @@ public class HomeController {
     public String forbidden(){
         return "403";
     }
+
 }
